@@ -40,11 +40,10 @@ L.TileLayer.WMTS = L.TileLayer.extend({
         nwPoint.x+=1;
         nwPoint.y-=1;
         var sePoint = nwPoint.add(new L.Point(tileSize, tileSize));
-        var zoom = this._tileZoom;
+        var zoom = this._getZoomForUrl();
         var nw = this._crs.project(this._map.unproject(nwPoint, zoom));
         var se = this._crs.project(this._map.unproject(sePoint, zoom));
-        tilewidth = se.x-nw.x;
-        //zoom = this._map.getZoom();
+        var tilewidth = se.x-nw.x;
         var ident = this.matrixIds[zoom].identifier;
         var X0 = this.matrixIds[zoom].topLeftCorner.lng;
         var Y0 = this.matrixIds[zoom].topLeftCorner.lat;
@@ -52,21 +51,6 @@ L.TileLayer.WMTS = L.TileLayer.extend({
         var tilerow=-Math.floor((nw.y-Y0)/tilewidth);
         var url = L.Util.template(this._url, {s: this._getSubdomain(coords)});
         return url + L.Util.getParamString(this.wmtsParams, url) + "&tilematrix=" + ident + "&tilerow=" + tilerow +"&tilecol=" + tilecol ;
-        /*
-        var tileBounds = this._tileCoordsToBounds(coords);
-        var zoom = this._tileZoom;
-        var nw = this._crs.project(tileBounds.getNorthWest());
-        var se = this._crs.project(tileBounds.getSouthEast());
-        var tilewidth = se.x-nw.x;
-        var ident = this.matrixIds[zoom].identifier;
-        var X0 = this.matrixIds[zoom].topLeftCorner.lng;
-        var Y0 = this.matrixIds[zoom].topLeftCorner.lat;
-        var tilecol=Math.floor((nw.x+1-X0)/tilewidth);
-        var tilerow=-Math.floor((nw.y-1-Y0)/tilewidth);
-        var url = L.Util.template(this._url, {s: this._getSubdomain(coords)});
-        console.log(L.Util.getParamString(this.wmtsParams, url) + "&tilematrix=" + ident + "&tilerow=" + tilerow +"&tilecol=" + tilecol );
-        return url + L.Util.getParamString(this.wmtsParams, url) + "&tilematrix=" + ident + "&tilerow=" + tilerow +"&tilecol=" + tilecol ;
-        */
     },
 
     setParams: function (params, noRedraw) {
